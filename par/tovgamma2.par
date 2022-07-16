@@ -1,0 +1,13 @@
+# This is a test parfile
+# The file parser is very stupid:
+# - it will ignore lines starting with '#' , and 
+# - it will look for strings '<key>=<value>'
+# be sure not to format properly the parfile and do not leave spaces ...
+#
+# example for spherical polytropic star with gamma=2 and rho_central = 1.28e-3
+# these are actually the default parameters
+#
+rns_verbose=2
+rns_save_2ddata=1
+outputdir=tovgamma2
+# be also sure not to leave blank lines after this.
