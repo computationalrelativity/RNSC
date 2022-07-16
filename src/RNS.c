@@ -65,7 +65,10 @@ void RNS_params_set_inputfile(char* inputfile){
   if(inputfile!=NULL){
     params_read(inputfile);
 
-    char od[STRLEN];//SB: this can be improved.
+    // Set outputdir from parfile
+    //SB: this should be improved.
+    /*
+    char od[STRLEN];
     int n = strlen(inputfile);
     if (STREQL(inputfile+(n-4),".par")) {
       strncpy (od,inputfile,n-4);
@@ -73,6 +76,7 @@ void RNS_params_set_inputfile(char* inputfile){
       //printf("%s\n",s);
       params_set_str("outputdir",od); 
     }
+    */
   }
 }
 
@@ -149,34 +153,36 @@ ini_data* RNS_make_initial_data() {
   
   /* EQUILIBRIUM VARIABLES */
   
-  int    n_tab,                        /* Number of points in EOS file */
-    a_check=0,                    /* if =200, iteration diverges */ 
-    i;                            /* loop counter */ 
+  int n_tab,                      /* Number of points in EOS file */
+    a_check=0,                   /* if =200, iteration diverges */ 
+    n_near,
+    n_nearest;
   
-  int n_near;
-  
-  double log_e_tab[TABPTS],               /* energy dens./c^2 in tab. EOS */
-    log_p_tab[TABPTS],               /* pressure in tabulated EOS */
-    log_h_tab[TABPTS],               /* enthalpy in EOS file */
-    log_n0_tab[TABPTS],              /* number density in EOS file */  
-    Gamma_tab[TABPTS],               /* Gamma in tab. EOS file */
-    e_center, 
+  double log_e_tab[TABPTS],       /* energy dens./c^2 in tab. EOS */
+    log_p_tab[TABPTS],            /* pressure in tabulated EOS */
+    log_h_tab[TABPTS],            /* enthalpy in EOS file */
+    log_n0_tab[TABPTS],           /* number density in EOS file */  
+    Gamma_tab[TABPTS],            /* Gamma in tab. EOS file */
     p_center,                     /* central pressure */ 
     h_center,                     /* central enthalpy */ 
     e_surface,                    /* surface en. density */ 
     p_surface,                    /* surface pressure */
     enthalpy_min,                 /* minimum enthalpy in EOS */
-    *s_gp,                        /* s grid points */
+    n0;
+
+  double *s_gp,                   /* s grid points */
     *mu,                          /* \mu grid points */
-    **rho_potential,                          /* potential \rho_potential */ 
-    **gama,                         /* potential \gamma */ 
-    **omega,                        /* potential \omega */ 
-    **alpha,                        /* potential \alpha */ 
-    **energy,                       /* energy density \epsilon */
-    **pressure,                     /* pressure */ 
-    **enthalpy,                     /* enthalpy */
-    **velocity_sq,                  /* square of velocity */         
-    R_e,                          /* Circumferential radius */
+    **rho_potential,              /* potential \rho_potential */ 
+    **gama,                       /* potential \gamma */ 
+    **omega,                      /* potential \omega */ 
+    **alpha,                      /* potential \alpha */ 
+    **energy,                     /* energy density \epsilon */
+    **pressure,                   /* pressure */ 
+    **enthalpy,                   /* enthalpy */
+    **velocity_sq,                /* square of velocity */         
+    **Omega_diff;                 /* Diff. ang. vel. */ 
+  
+  double R_e,                     /* Circumferential radius */
     Mass,                         /* Gravitational mass */
     Mass_0,                       /* Baryon Mass */
     T,                            /* Rotational kinetic energy */
@@ -185,31 +191,8 @@ ini_data* RNS_make_initial_data() {
     Omega_K,                      /* Ang. vel. of part. in orbit at eq.*/
     r_e,                          /* coord. radius at equator */
     Omega_e,                      /* Ang. vel. at equator, when difrot. */
-    **Omega_diff,                   /* Diff. ang. vel. */ 
     J;                            /* Angular momentun */ 
-  
-  int m,                               /* counter */
-    s,                               /* counter */
-    j,                               /* counter */
-    k;                               /* counter */
-  
-  double 
-    n_P,                           /* polytropic index */
-    **nu,                          /* potential nu */
-    **B,                           /* potential B */  
-    **rho_0,                       /* rest mass density */
-    **nu_dr,                       /* r-der. in s-coord. of nu */
-    **B_dr,                        /* r-der. in s-coord. of B */
-    **alpha_dr,                    /* r-der. in s-coord. of alpha */
-    **omega_dr,                    /* r-der. in s-coord. of omega */
-    **nu_dth,                      /* theta-der. in mu-coord. of nu */
-    **B_dth,                       /* theta-der. in mu-coord. of B */
-    **alpha_dth,                   /* theta-der. in mu-coord. of alpha */
-    **omega_dth;                   /* theta-der. in mu-coord. of omega */
-
-  int n_nearest;
-  double n0;
-  
+      
   if (print_dif>print_globalprop1) {
     printf("Set rotating star initial data\n");
     printf("Parameters:\n");
@@ -224,8 +207,8 @@ ini_data* RNS_make_initial_data() {
   }
 
   /* COMPUTE POLYTROPIC INDEX AND CENTRAL ENERGY DENSITY */
-  n_P = 1.0/(eos_ideal_fluid_gamma-1.0);            
-  e_center = (eos_k*pow(rho0_center,eos_ideal_fluid_gamma)/(eos_ideal_fluid_gamma-1.0)+rho0_center);
+  double n_P = 1.0/(eos_ideal_fluid_gamma-1.0);            
+  double e_center = (eos_k*pow(rho0_center,eos_ideal_fluid_gamma)/(eos_ideal_fluid_gamma-1.0)+rho0_center);
 
   /* these can be also 0, atm set later on */
   double e_atm = rho0_atm;
@@ -264,8 +247,8 @@ ini_data* RNS_make_initial_data() {
   Omega_diff = dmatrix(1,SDIV,1,MDIV);
     
   /* INITIALIZE VARIABLES WITH ZERO */  
-  for(s=1;s<=SDIV;s++)
-    for(m=1;m<=MDIV;m++) {
+  for(int s=1;s<=SDIV;s++)
+    for(int m=1;m<=MDIV;m++) {
       rho_potential[s][m] = 0.0e0;
       gama[s][m] = 0.0e0;
       alpha[s][m] = 0.0e0;
@@ -307,7 +290,7 @@ ini_data* RNS_make_initial_data() {
 	 alpha, omega, &r_e );     
   
   /* ITERATE AND SPIN UP THE GUESS */
-  for(i=0;i<ARSTEPS;i++) {
+  for(int i=0;i<ARSTEPS;i++) {
     
     if (axes_ratio>axes_ratio_steps[i]) break; 
     
@@ -315,7 +298,7 @@ ini_data* RNS_make_initial_data() {
       printf("iter %d (%d) a=%g (%g)\n",i,ARSTEPS,axes_ratio_steps[i],axes_ratio);
     
     iterate( s_gp, mu, eos_type, eos_k, log_e_tab, log_p_tab, log_h_tab, 
-	     n_tab, eos_ideal_fluid_gamma, axes_ratio_steps[i], // <<<************************ 
+	     n_tab, eos_ideal_fluid_gamma, axes_ratio_steps[i], 
 	     h_center, enthalpy_min, &a_check, 
 	     accuracy,print_dif,cf, &r_e, rho_potential, gama, alpha, omega, 
 	     energy, pressure, enthalpy, velocity_sq, &Omega,
@@ -326,7 +309,7 @@ ini_data* RNS_make_initial_data() {
   
   /* last one */
   iterate( s_gp, mu, eos_type, eos_k, log_e_tab, log_p_tab, log_h_tab, 
-	   n_tab, eos_ideal_fluid_gamma, axes_ratio, // <<<************************ 
+	   n_tab, eos_ideal_fluid_gamma, axes_ratio, 
 	   h_center, enthalpy_min, &a_check, 
 	   accuracy,print_dif,cf, &r_e, rho_potential, gama, alpha, omega, 
 	   energy, pressure, enthalpy, velocity_sq, &Omega,
@@ -395,37 +378,26 @@ ini_data* RNS_make_initial_data() {
   data->alpha_dth = dmatrix(1,SDIV,1,MDIV);
   data->omega_dth = dmatrix(1,SDIV,1,MDIV);
   
-  for(m=1;m<=MDIV;m++) {
-    for(s=1;s<=SDIV;s++) {
+  for(int m=1;m<=MDIV;m++) {
+    for(int s=1;s<=SDIV;s++) {
       data->rho_0[s][m] = (energy[s][m]+pressure[s][m])*exp(-enthalpy[s][m]);
       data->energy[s][m] = energy[s][m];
       data->pressure[s][m] = pressure[s][m];
       data->Omega_diff[s][m] = Omega_diff[s][m];
     }
   }
-  
-  free_dmatrix(energy,1,SDIV,1,MDIV);
-  free_dmatrix(pressure,1,SDIV,1,MDIV);
-  free_dmatrix(Omega_diff,1,SDIV,1,MDIV);
-  free_dmatrix(enthalpy,1,SDIV,1,MDIV);
-  free_dmatrix(velocity_sq,1,SDIV,1,MDIV);
-  
-  for(m=1;m<=MDIV;m++) {
-    for(s=1;s<=SDIV;s++) {
+    
+  for(int m=1;m<=MDIV;m++) {
+    for(int s=1;s<=SDIV;s++) {
       data->nu[s][m] = (gama[s][m]+rho_potential[s][m])/2.0;
       data->B[s][m] = exp(gama[s][m]);
       data->alpha[s][m] = alpha[s][m];
       data->omega[s][m] = omega[s][m];
     }
   }
-  
-  free_dmatrix(rho_potential,1,SDIV,1,MDIV);
-  free_dmatrix(gama,1,SDIV,1,MDIV);
-  free_dmatrix(alpha,1,SDIV,1,MDIV);
-  free_dmatrix(omega,1,SDIV,1,MDIV);
-    
-  for(m=1;m<=MDIV;m++)
-    for(s=1;s<=SDIV;s++) {
+
+  for(int m=1;m<=MDIV;m++)
+    for(int s=1;s<=SDIV;s++) {
       data->nu_dr[s][m] = deriv_s(data->nu,s,m)*SQ(1.0-s_gp[s])/r_e;
       data->B_dr[s][m] = deriv_s(data->B,s,m)*SQ(1.0-s_gp[s])/r_e;
       data->alpha_dr[s][m] = deriv_s(data->alpha,s,m)*SQ(1.0-s_gp[s])/r_e;
@@ -436,8 +408,19 @@ ini_data* RNS_make_initial_data() {
       data->omega_dth[s][m] = deriv_m(data->omega,s,m)*(-sqrt(1.0-SQ(mu[m])));
     }
 
+  /* FREE MEMORY */
   free(s_gp);
   free(mu);
+  free_dmatrix(energy,1,SDIV,1,MDIV);
+  free_dmatrix(pressure,1,SDIV,1,MDIV);
+  free_dmatrix(Omega_diff,1,SDIV,1,MDIV);
+  free_dmatrix(enthalpy,1,SDIV,1,MDIV);
+  free_dmatrix(velocity_sq,1,SDIV,1,MDIV);
+  
+  free_dmatrix(rho_potential,1,SDIV,1,MDIV);
+  free_dmatrix(gama,1,SDIV,1,MDIV);
+  free_dmatrix(alpha,1,SDIV,1,MDIV);
+  free_dmatrix(omega,1,SDIV,1,MDIV);
   
   /* SAVE 2D FILE (todo) */
   if (params_get_int("rns_save_2ddata")) {
@@ -774,7 +757,7 @@ void RNS_data_tofile(ini_data *data)
     fprintf(fp,"# EOS_file = %s\n",params_get_str("rns_eos_tab"));
   }
   fprintf(fp,"# \n");
-  printf(fp,"#data: s_gp:1 mu:2 nu:3 nu_dr:4 nu_dth:5 B:6 B_dr:7 B_dth:8 omega:9 omega_dr:10 omega_dth:11 alpha:12 alpha_dr:13 alpha_dth:14 rho0:15 energy:16 pressure:17 Omega_diff:18\n");    
+  fprintf(fp,"#data: s_gp:1 mu:2 nu:3 nu_dr:4 nu_dth:5 B:6 B_dr:7 B_dth:8 omega:9 omega_dr:10 omega_dth:11 alpha:12 alpha_dr:13 alpha_dth:14 rho0:15 energy:16 pressure:17 Omega_diff:18\n");    
   for(int m=1;m<=MDIV;m++) {
     for(int s=1;s<=SDIV;s++) {  
       fprintf(fp,"%le %le"

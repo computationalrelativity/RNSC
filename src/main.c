@@ -6,14 +6,14 @@
 #define test_interp (1)
 
 int main(int argc, char* argv[]) {
-
-  RNS_params_set_default();  // must be set initially
   
   char * inputfile = NULL;
   if(argc == 2){
     inputfile = argv[1];
     printf("Input file: %s \n", inputfile);
     RNS_params_set_inputfile(inputfile);
+  } else {
+    RNS_params_set_default();
   }
   
   /*
