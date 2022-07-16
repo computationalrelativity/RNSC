@@ -6,11 +6,12 @@ The original code is based on the method developed by [Komatsu, Eriguchi & Hachi
 
 This code is a stand-alone, early version of the `Cactus/WhiskyRNSID` module by SB, that ultimately finished in the [Cactus/Einstein Toolkit](https://einsteintoolkit.org/thornguide/EinsteinInitialData/Hydro_RNSID/documentation.html).
 
-WARNING
+WARNING/TODOS
 
  * Error handling is very poor and problematic with multi-threading or MPI.
- * The use of EOS tables should be tested in some detail.
-
+ * The use of EOS tables should be tested in some detail (note the units).
+ * Add support to generate sequences as present in the original rns code.
+ 
 HISTORY
 
  * SB 07/2022 started
