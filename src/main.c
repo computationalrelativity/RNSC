@@ -2,6 +2,9 @@
 
 #include "RNS.h"
 
+#define print_data (0)
+#define test_interp (1)
+
 int main(int argc, char* argv[]) {
 
   RNS_params_set_default();  // must be set initially
@@ -18,7 +21,11 @@ int main(int argc, char* argv[]) {
   */
   ini_data *data = RNS_make_initial_data();
   
-  //RNS_data_print(data);
+#if(print_data)
+  RNS_data_print(data);
+#endif
+  
+#if (test_interp)
   
   // example of interpolating lapse and rho to a few nodes
   int imin[3] = {0, 0, 0};
@@ -67,11 +74,13 @@ int main(int argc, char* argv[]) {
       }
     }
   }
-
+  
   free(lapse);
   free(rho);
   free(tmp);
-    
+  
+#endif
+  
   // make sure to take care of any internal memory that must be freed!
   RNS_finalise(data);
   
