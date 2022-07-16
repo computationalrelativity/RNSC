@@ -2,8 +2,13 @@
 
 #include "RNS.h"
 
-#define print_data (0)
-#define test_interp (1)
+#ifndef PRINTDATA
+#define PRINTDATA (0)
+#endif
+
+#ifndef TESTINTERP
+#define TESTINTERP (0)
+#endif
 
 int main(int argc, char* argv[]) {
   
@@ -21,11 +26,11 @@ int main(int argc, char* argv[]) {
   */
   ini_data *data = RNS_make_initial_data();
   
-#if(print_data)
+#if(PRINTDATA)
   RNS_data_print(data);
 #endif
   
-#if (test_interp)
+#if (TESTINTERP)
   
   // example of interpolating lapse and rho to a few nodes
   int imin[3] = {0, 0, 0};

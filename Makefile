@@ -26,10 +26,13 @@ LD = ld
 AR = ar
 
 CFLAGS = -std=c99 -fPIC -pedantic
-LFLAGS=
-LDLFLAGS= -lm # -lgsl -lgslcblas
-
 CFLAGS += -O3
+# Additional features for debugging
+#CFLAGS += -DTESTINTERP=1 # run the interpolation test
+#CFLAGS += -DPRINTDATA=1 # screen the data
+
+LFLAGS=
+LDLFLAGS= -lm
 
 all: $(EXE) $(LIB)
 	@echo "All done"
