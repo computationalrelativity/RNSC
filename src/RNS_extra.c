@@ -273,3 +273,24 @@ void print_global_quantities(char * eos_type,
 	 I);
   
 }
+
+
+/*
+ * miscellanea
+ */
+
+
+/* compute v^i = g^{ij} v_j (or v_i = g_{ij} v^j ) 
+   and v_i v^i */
+void contract_vect_v2(double vlx, double vly, double vlz,
+		      double gxx, double gxy, double gxz,
+		      double gyy, double gyz, double gzz,
+		      double *vx, double *vy, double *vz,
+		      double *v2)
+{
+  *vx = gxx*vlx + gxy*vly + gxz*vlz;
+  *vy = gxy*vlx + gyy*vly + gyz*vlz;
+  *vz = gxz*vlx + gyz*vly + gzz*vlz; 
+  *v2 = (*vx)*vlx + (*vy)*vly + (*vz)*vlz;
+}
+

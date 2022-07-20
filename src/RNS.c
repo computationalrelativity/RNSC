@@ -491,7 +491,8 @@ void RNS_Cartesian_interpolation
  double *adm_Kyy, double *adm_Kyz, double *adm_Kzz,
  double *grhd_rho,          // hydro
  double *grhd_epsl,
- double *grhd_vx, double *grhd_vy, double *grhd_vz,
+ double *grhd_vx, double *grhd_vy, double *grhd_vz, // v^i
+ double *grhd_ux, double *grhd_uy, double *grhd_uz, // u^i = W v^i
  double *grhd_p
  ) {
   
@@ -684,6 +685,19 @@ void RNS_Cartesian_interpolation
 	grhd_vy[ijk] = -(omega_ijk-Omega_ijk)*x_i/exp_nu_ijk;
 	grhd_vz[ijk] = 0.0;
 	grhd_p[ijk]  =  pressure_ijk;
+
+	double vlx, vly, vlz, v2;
+	contract_vect_v2(grhd_vx[ijk], grhd_vy[ijk], grhd_vz[ijk],
+			 gxx, gxy, gxz,
+			 gyy, gyz, gzz,
+			 &vlx, &vly, &vlz,
+			 &v2);
+	
+	if (fabs(v2) < 1e-20) v2 = 0.;
+	double W = 1.0/sqrt(1-v2);	
+	grhd_ux[ijk] = W * grhd_vx[ijk];
+	grhd_uy[ijk] = W * grhd_vy[ijk];
+	grhd_uz[ijk] = W * grhd_vz[ijk];
 	
       }
     }

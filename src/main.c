@@ -64,6 +64,7 @@ int main(int argc, char* argv[]) {
      rho,  
      tmp,            // grhd_epsl,
      tmp, tmp, tmp,  // grhd_vx, grhd_vy, grhd_vz,
+     tmp, tmp, tmp,  // grhd_ux, grhd_uy, grhd_uz,
      tmp             //grhd_p
      );
 

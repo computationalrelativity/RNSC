@@ -729,7 +729,12 @@ void print_global_quantities(char * eos_type,
 			     double Omega_K,
 			     double Omega_e);
 
-/* output */
+void contract_vect_v2(double vlx, double vly, double vlz,
+		      double gxx, double gxy, double gxz,
+		      double gyy, double gyz, double gzz,
+		      double *vx, double *vy, double *vz,
+		      double *v2);
+
 
 /** RNS.c */
 
@@ -796,6 +801,7 @@ extern "C" {
    double *grhd_rho,          // hydro
    double *grhd_epsl,
    double *grhd_vx, double *grhd_vy, double *grhd_vz,
+   double *grhd_ux, double *grhd_uy, double *grhd_uz,
    double *grhd_p);
   
   // for cleanup purposes
