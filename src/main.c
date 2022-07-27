@@ -39,9 +39,9 @@ int main(int argc, char* argv[]) {
 
   int sz = (n[0]) * (n[1]) * (n[2]);
 
+  // Fill only lapse and rho in this example
   double *lapse = (double *) malloc(sz * sizeof(double));
   double *rho = (double *) malloc(sz * sizeof(double));
-  double *tmp = (double *) malloc(sz * sizeof(double));
   
   double x[2] = {0., -5.0};
   double y[2] = {0., +5.0};
@@ -55,17 +55,17 @@ int main(int argc, char* argv[]) {
      x,   
      y,
      z,
-     lapse,          // lapse
-     tmp, tmp, tmp,  // betax, betay, betaz,
-     tmp, tmp, tmp,  // adm_gxx, adm_gxy, adm_gxz,
-     tmp, tmp, tmp,  // adm_gyy, adm_gyz, adm_gzz,
-     tmp, tmp, tmp,  // adm_Kxx, adm_Kxy, adm_Kxz,
-     tmp, tmp, tmp,  // adm_Kyy, adm_Kyz, adm_Kzz,
+     lapse,             // lapse
+     NULL, NULL, NULL,  // betax, betay, betaz,
+     NULL, NULL, NULL,  // adm_gxx, adm_gxy, adm_gxz,
+     NULL, NULL, NULL,  // adm_gyy, adm_gyz, adm_gzz,
+     NULL, NULL, NULL,  // adm_Kxx, adm_Kxy, adm_Kxz,
+     NULL, NULL, NULL,  // adm_Kyy, adm_Kyz, adm_Kzz,
      rho,  
-     tmp,            // grhd_epsl,
-     tmp, tmp, tmp,  // grhd_vx, grhd_vy, grhd_vz,
-     tmp, tmp, tmp,  // grhd_ux, grhd_uy, grhd_uz,
-     tmp             //grhd_p
+     NULL,              // grhd_epsl,
+     NULL, NULL, NULL,  // grhd_vx, grhd_vy, grhd_vz,
+     NULL, NULL, NULL,  // grhd_ux, grhd_uy, grhd_uz,
+     NULL               //grhd_p
      );
 
   printf("Interpolation resuts:\n");
@@ -83,7 +83,6 @@ int main(int argc, char* argv[]) {
   
   free(lapse);
   free(rho);
-  free(tmp);
   
 #endif
   

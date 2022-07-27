@@ -654,50 +654,55 @@ void RNS_Cartesian_interpolation
 	}
 
 	// populate Cartesian tensors
-	lapse[ijk] = exp_nu_ijk;
-      	betax[ijk] = omega_ijk*y_j;
-	betay[ijk] = -omega_ijk*x_i;
-	betaz[ijk] = 0.0;
-      
-	adm_gxx[ijk] = gxx;
-	adm_gxy[ijk] = gxy;
-	adm_gxz[ijk] = gxz;
-	adm_gyy[ijk] = gyy;
-	adm_gyz[ijk] = gyz;
-	adm_gzz[ijk] = gzz;
+	if (lapse) lapse[ijk] = exp_nu_ijk;
+      	if (betax) betax[ijk] = omega_ijk*y_j;
+	if (betay) betay[ijk] = -omega_ijk*x_i;
+	if (betaz) betaz[ijk] = 0.0;
 	
-	adm_Kxx[ijk] = kxx;
-	adm_Kxy[ijk] = kxy;
-	adm_Kxz[ijk] = kxz;
-	adm_Kyy[ijk] = kyy;
-	adm_Kyz[ijk] = kyz;
-	adm_Kzz[ijk] = kzz;
+	if (adm_gxx) adm_gxx[ijk] = gxx;
+	if (adm_gxy) adm_gxy[ijk] = gxy;
+	if (adm_gxz) adm_gxz[ijk] = gxz;
+	if (adm_gyy) adm_gyy[ijk] = gyy;
+	if (adm_gyz) adm_gyz[ijk] = gyz;
+	if (adm_gzz) adm_gzz[ijk] = gzz;
 	
+	if (adm_Kxx) adm_Kxx[ijk] = kxx;
+	if (adm_Kxy) adm_Kxy[ijk] = kxy;
+	if (adm_Kxz) adm_Kxz[ijk] = kxz;
+	if (adm_Kyy) adm_Kyy[ijk] = kyy;
+	if (adm_Kyz) adm_Kyz[ijk] = kyz;
+	if (adm_Kzz) adm_Kzz[ijk] = kzz;
+
 	if( (rho_0_ijk<=0.0) || (energy_ijk<=0.0) || (pressure_ijk<=0.0) ) {
 	  rho_0_ijk    = rho0_atm;
 	  energy_ijk   = e_atm;
 	  pressure_ijk = p_atm;
 	}
 	
-	grhd_rho[ijk]  = rho_0_ijk;
-	grhd_epsl[ijk] = energy_ijk/rho_0_ijk-1.0;
-	grhd_vx[ijk] = (omega_ijk-Omega_ijk)*y_j/exp_nu_ijk;
-	grhd_vy[ijk] = -(omega_ijk-Omega_ijk)*x_i/exp_nu_ijk;
-	grhd_vz[ijk] = 0.0;
-	grhd_p[ijk]  =  pressure_ijk;
-
-	double vlx, vly, vlz, v2;
-	contract_vect_v2(grhd_vx[ijk], grhd_vy[ijk], grhd_vz[ijk],
+	double vx = (omega_ijk-Omega_ijk)*y_j/exp_nu_ijk;
+	double vy = -(omega_ijk-Omega_ijk)*x_i/exp_nu_ijk;
+	double vz = 0.;	
+	double vlx = 0, vly = 0, vlz = 0, v2 = 0;
+	contract_vect_v2(vx, vy, vz,
 			 gxx, gxy, gxz,
 			 gyy, gyz, gzz,
 			 &vlx, &vly, &vlz,
 			 &v2);
 	
 	if (fabs(v2) < 1e-20) v2 = 0.;
-	double W = 1.0/sqrt(1-v2);	
-	grhd_ux[ijk] = W * grhd_vx[ijk];
-	grhd_uy[ijk] = W * grhd_vy[ijk];
-	grhd_uz[ijk] = W * grhd_vz[ijk];
+	double W = 1.0/sqrt(1-v2);
+	
+	if (grhd_rho) grhd_rho[ijk]  = rho_0_ijk;
+	if (grhd_epsl) grhd_epsl[ijk] = energy_ijk/rho_0_ijk-1.0;
+	if (grhd_p) grhd_p[ijk]  = pressure_ijk;
+
+	if (grhd_vx) grhd_vx[ijk] = vx;
+	if (grhd_vy) grhd_vy[ijk] = vy;
+	if (grhd_vz) grhd_vz[ijk] = vz;
+	
+	if (grhd_ux) grhd_ux[ijk] = W * vx;
+	if (grhd_uy) grhd_uy[ijk] = W * vy;
+	if (grhd_uz) grhd_uz[ijk] = W * vz;
 	
       }
     }
