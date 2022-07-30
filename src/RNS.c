@@ -124,18 +124,14 @@ double axes_ratio_steps[ARSTEPS] = {.8, .6, .5, .4, .3, .2, .1, .05, .0025, .001
 
 ini_data* RNS_make_initial_data() {
   
-  /* Set globals from parameters */
-  char rotation_type[1000];
-  double accuracy, A_diff,cf;
-  int RNS_lmax;
-  int MDIV,SDIV;
+  char rotation_type[STRLEN];
   strcpy(rotation_type,params_get_str("rns_rotation_type"));
-  accuracy    = params_get_real("rns_accuracy");
-  A_diff      = params_get_real("rns_A_diff");
-  cf          = params_get_real("rns_conv_factor");
-  RNS_lmax    = params_get_int("rns_lmax");
-  SDIV        = params_get_int("rns_SDIV"); 
-  MDIV        = params_get_int("rns_MDIV");
+  const double accuracy = params_get_real("rns_accuracy");
+  const double A_diff   = params_get_real("rns_A_diff");
+  const double cf       = params_get_real("rns_conv_factor");
+  const int RNS_lmax    = params_get_int("rns_lmax");
+  const int SDIV        = params_get_int("rns_SDIV"); 
+  const int MDIV        = params_get_int("rns_MDIV");
   char eos_type[STRLEN];
   strcpy(eos_type,params_get_str("rns_eos_type"));  
   if( (strcmp(eos_type,"poly")!=0) && (strcmp(eos_type,"tab")!=0) ){
@@ -438,9 +434,9 @@ void RNS_finalise(ini_data *data){
   /*
     Clean up all internally allocated objects.
   */
-  int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
+
+  const int SDIV = params_get_int("rns_SDIV");
+  const int MDIV = params_get_int("rns_MDIV");
 
   if (data) {
 
@@ -723,9 +719,9 @@ void RNS_Cartesian_interpolation
 
 void RNS_data_print(ini_data *data)
 {
-  int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
+  const int SDIV = params_get_int("rns_SDIV");
+  const int MDIV = params_get_int("rns_MDIV");
+
   printf("# MDIV %d\n# SDIV %d\n", data->MDIV, data->SDIV);
   printf("# rho_center = %e\n# axes_ratio = %e\n",
 	  params_get_real("rns_rhoc"),
@@ -763,9 +759,9 @@ void RNS_data_print(ini_data *data)
 
 void RNS_data_tofile(ini_data *data)
 {
-  int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
+  const int SDIV = params_get_int("rns_SDIV");
+  const int MDIV = params_get_int("rns_MDIV");
+
   FILE *fp;
   char file[STRLEN*10];    
   sprintf(file,"%s/RNSdata_2d.dat",params_get_str("outputdir"));

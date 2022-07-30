@@ -17,8 +17,9 @@
 #ifndef _NR_UTILS_H_
 #define _NR_UTILS_H_
 
-//static float sqrarg;
-//#define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg)
+/* unused */
+/* static float sqrarg; */
+/* #define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg) */
 
 static double dsqrarg;
 #define DSQR(a) ((dsqrarg=(a)) == 0.0 ? 0.0 : dsqrarg*dsqrarg)
@@ -120,10 +121,10 @@ void free_f3tensor();
 /*   #define MDIV 301 */
 /*   #define SDIV 601 */
 
-#define DM (1.0/(MDIV-1.0))          /* spacing in mu direction */ 
+/* #define DM (1.0/(MDIV-1.0)) */          /* spacing in mu direction */ 
 #define RDIV (900)                   /* grid point in RK integration */ 
 #define SMAX (0.9999)                /* maximum value of s-coordinate */  
-//#define DS (SMAX/(SDIV-1.0))         /* spacing in s-direction */
+/* #define DS (SMAX/(SDIV-1.0)) */         /* spacing in s-direction */
 
 #define C_SPEED (2.9979e10)                /* speed of light in vacuum */
 #define G (6.6732e-8)                /* gravitational constant */ 
@@ -163,12 +164,6 @@ enum{
   verbose_levels 
 };
 
-/** Globals */
-
-//char rotation_type[1000];
-//double accuracy, A_diff,cf;
-//int RNS_lmax;
-//int MDIV,SDIV;
 
 /** RNS_equil.c */
 

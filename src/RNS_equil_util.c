@@ -54,7 +54,7 @@ void nr_hunt(double xx[], int n, double x, int *jlo)
 		}
 	}
 	while (jhi-(*jlo) != 1) {
-		jm=(jhi+(*jlo)) >> 1;
+	  jm=(jhi+(*jlo)) >> 1;
 		if (x > xx[jm] == ascnd)
 			*jlo=jm;
 		else
@@ -108,17 +108,16 @@ double deriv_s(double **f,int s, int m)
 { 
  double d_temp;
 
-  int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
-
-
+ const int SDIV  = params_get_int("rns_SDIV"); 
+ const int MDIV  = params_get_int("rns_MDIV");
+ const double DS = (SMAX/(SDIV-1.0));
+ 
  if (s==1) {
-   d_temp=(f[s+1][m]-f[s][m])/(SMAX/(SDIV-1.0));
+   d_temp=(f[s+1][m]-f[s][m])/DS;
  } else if (s==SDIV) {
-   d_temp=(f[s][m]-f[s-1][m])/(SMAX/(SDIV-1.0));
+   d_temp=(f[s][m]-f[s-1][m])/DS;
  } else {
-   d_temp=(f[s+1][m]-f[s-1][m])/(2.0*(SMAX/(SDIV-1.0)));
+   d_temp=(f[s+1][m]-f[s-1][m])/(2.0*DS);
  } 
  
  return d_temp;
@@ -130,40 +129,39 @@ double deriv_s(double **f,int s, int m)
 double deriv_ss(double **f,int s, int m)
 { 
  double d_temp;
-int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
 
-
+ const int SDIV  = params_get_int("rns_SDIV"); 
+ const int MDIV  = params_get_int("rns_MDIV");
+ const double DS = (SMAX/(SDIV-1.0));
 
  if (s==1)
    {
      s=4;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
    }
  else if (s==2)
    {
      s=4;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
    }
  else if (s==3)
    {
      s=4;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
    }
  else if (s==SDIV-1)
    {
      s=SDIV-2;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
    }
  else if (s==SDIV)
    {
      s=SDIV-2;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
    }
  else
    {
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
    }
 
  return d_temp;
@@ -175,10 +173,9 @@ int MDIV,SDIV;
 double deriv_m(double **f,int s, int m)
 {
  double d_temp;
-int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
-
+ const int SDIV  = params_get_int("rns_SDIV");
+ const int MDIV  = params_get_int("rns_MDIV");
+ const double DM = (1.0/(MDIV-1.0));
 
  if (m==1)
    {
@@ -202,10 +199,10 @@ int MDIV,SDIV;
 double deriv_mm(double **f,int s, int m)
 { 
  double d_temp;
-int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
 
+ const int SDIV  = params_get_int("rns_SDIV");
+ const int MDIV  = params_get_int("rns_MDIV");
+ const double DM = (1.0/(MDIV-1.0));
 
  if (m==1)
    {
@@ -231,48 +228,49 @@ int MDIV,SDIV;
 double deriv_sm(double **f,int s, int m)
 {
  double d_temp;
-int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
 
+ const int SDIV  = params_get_int("rns_SDIV");
+ const int MDIV  = params_get_int("rns_MDIV");
+ const double DM = (1.0/(MDIV-1.0));
+ const double DS = (SMAX/(SDIV-1.0));
 
  if (s==1)
    {
      if(m==1) {
-       d_temp=(f[s+1][m+1]-f[s][m+1]-f[s+1][m]+f[s][m])/(DM*(SMAX/(SDIV-1.0)));
+       d_temp=(f[s+1][m+1]-f[s][m+1]-f[s+1][m]+f[s][m])/(DM*DS);
      }else{
        if(m==MDIV) {
-         d_temp=(f[s+1][m]-f[s][m]-f[s+1][m-1]+f[s][m-1])/(DM*(SMAX/(SDIV-1.0)));
+         d_temp=(f[s+1][m]-f[s][m]-f[s+1][m-1]+f[s][m-1])/(DM*DS);
        }else{
          d_temp=(f[s+1][m+1]-f[s+1][m-1]-f[s][m+1]+f[s][m-1])/
-           (2.0*DM*(SMAX/(SDIV-1.0)));
+           (2.0*DM*DS);
        }
      }
    }
  else if (s==SDIV)
    {
      if(m==1) {
-       d_temp=(f[s][m+1]-f[s][m]-f[s-1][m+1]+f[s-1][m])/(DM*(SMAX/(SDIV-1.0)));
+       d_temp=(f[s][m+1]-f[s][m]-f[s-1][m+1]+f[s-1][m])/(DM*DS);
      }else{
        if(m==MDIV) {
-         d_temp=(f[s][m]-f[s-1][m]-f[s][m-1]+f[s-1][m-1])/(DM*(SMAX/(SDIV-1.0)));
+         d_temp=(f[s][m]-f[s-1][m]-f[s][m-1]+f[s-1][m-1])/(DM*DS);
        }else{
          d_temp=(f[s][m+1]-f[s][m-1]-f[s-1][m+1]+f[s-1][m-1])/
-           (2.0*DM*(SMAX/(SDIV-1.0)));
+           (2.0*DM*DS);
        }
      }
    }
  else
    {
      if(m==1) {
-       d_temp=(f[s+1][m+1]-f[s-1][m+1]-f[s+1][m]+f[s-1][m])/(2.0*DM*(SMAX/(SDIV-1.0)));
+       d_temp=(f[s+1][m+1]-f[s-1][m+1]-f[s+1][m]+f[s-1][m])/(2.0*DM*DS);
      }else{
        if(m==MDIV) {
          d_temp=(f[s+1][m]-f[s-1][m]-f[s+1][m-1]+f[s-1][m-1])/
-           (2.0*DM*(SMAX/(SDIV-1.0)));
+           (2.0*DM*DS);
        }else{
          d_temp=(f[s+1][m+1]-f[s-1][m+1]-f[s+1][m-1]+f[s-1][m-1])/
-           (4.0*DM*(SMAX/(SDIV-1.0)));
+           (4.0*DM*DS);
        }
      }
    }

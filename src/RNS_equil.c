@@ -27,16 +27,14 @@ equil.c		PROCEDURES USED TO COMPUTE THE EQUILIBRIUM STAR
 /*******************************************************************/
 void rns_make_grid(double *s_gp,double *mu)
 {
-  int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
+  const int SDIV        = params_get_int("rns_SDIV"); 
+  const int MDIV        = params_get_int("rns_MDIV");
  
-  int m, s;                         /* counters */
-      for(s=1;s<=SDIV;s++) 
-         s_gp[s] = SMAX*(s-1.0)/(SDIV-1.0);
-   
-      for(m=1;m<=MDIV;m++) 
-         mu[m] = (m-1.0)/(MDIV-1.0);
+  for(int s=1;s<=SDIV;s++) 
+    s_gp[s] = SMAX*(s-1.0)/(SDIV-1.0);
+  
+  for(int m=1;m<=MDIV;m++) 
+    mu[m] = (m-1.0)/(MDIV-1.0);
 }
 
 
@@ -222,9 +220,9 @@ void comp_values(double *s_gp,
      m,
      n_nearest;
 
-  int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
+
+ const int SDIV        = params_get_int("rns_SDIV"); 
+ const int MDIV        = params_get_int("rns_MDIV");
  
  double **velocity,                /* velocity */
         **rho_0,                   /* rest mass density */
@@ -826,11 +824,8 @@ void guess(double *s_gp,
      m,
      n_nearest;
 
-
-  int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
-
+ const int SDIV        = params_get_int("rns_SDIV"); 
+ const int MDIV        = params_get_int("rns_MDIV");
 
  double r_is_s,
         r_is_final=0.0,
@@ -941,10 +936,11 @@ void iterate(double *s_gp,
              int RNS_lmax)
  {
 
-  int MDIV,SDIV;
-  SDIV        = params_get_int("rns_SDIV");
-  MDIV        = params_get_int("rns_MDIV");
-
+  const int SDIV = params_get_int("rns_SDIV");
+  const int MDIV = params_get_int("rns_MDIV");
+  const double DM = (1.0/(MDIV-1.0));
+  const double DS = (SMAX/(SDIV-1.0));
+  
  int m,                      /* counter */
      s,                      /* counter */
      n,                      /* counter */
@@ -1815,7 +1811,7 @@ double   sum_rho=0.0,         /* intermediate sum in eqn for rho */
       n=0;
       for(s=1;s<=SDIV;s++) {
             for(k=1;k<=SDIV-2;k+=2) { 
-               sum_rho += ((SMAX/(SDIV-1.0))/3.0)*( f_rho[s][n+1][k]*D1_rho[n+1][k] 
+               sum_rho += (DS/3.0)*( f_rho[s][n+1][k]*D1_rho[n+1][k] 
                           + 4.0*f_rho[s][n+1][k+1]*D1_rho[n+1][k+1]
                           + f_rho[s][n+1][k+2]*D1_rho[n+1][k+2]);
  	    }
@@ -1829,25 +1825,25 @@ double   sum_rho=0.0,         /* intermediate sum in eqn for rho */
       for(s=1;s<=SDIV;s++)
          for(n=1;n<=RNS_lmax;n++) {
             for(k=1;k<=SDIV-2;k+=2) { 
-               sum_rho += ((SMAX/(SDIV-1.0))/3.0)*( f_rho[s][n+1][k]*D1_rho[n+1][k] 
+               sum_rho += (DS/3.0)*( f_rho[s][n+1][k]*D1_rho[n+1][k] 
                           + 4.0*f_rho[s][n+1][k+1]*D1_rho[n+1][k+1]
                           + f_rho[s][n+1][k+2]*D1_rho[n+1][k+2]);
  
-               sum_gama += ((SMAX/(SDIV-1.0))/3.0)*( f_gama[s][n+1][k]*D1_gama[n+1][k] 
+               sum_gama += (DS/3.0)*( f_gama[s][n+1][k]*D1_gama[n+1][k] 
                            + 4.0*f_gama[s][n+1][k+1]*D1_gama[n+1][k+1]
                            + f_gama[s][n+1][k+2]*D1_gama[n+1][k+2]);
      
                if(k<s && k+2<=s) 
-                 sum_omega += ((SMAX/(SDIV-1.0))/3.0)*( f_rho[s][n+1][k]*D1_omega[n+1][k] 
+                 sum_omega += (DS/3.0)*( f_rho[s][n+1][k]*D1_omega[n+1][k] 
                               + 4.0*f_rho[s][n+1][k+1]*D1_omega[n+1][k+1]
                               + f_rho[s][n+1][k+2]*D1_omega[n+1][k+2]);
                else {
                  if(k>=s) 
-                   sum_omega += ((SMAX/(SDIV-1.0))/3.0)*( f_gama[s][n+1][k]*D1_omega[n+1][k] 
+                   sum_omega += (DS/3.0)*( f_gama[s][n+1][k]*D1_omega[n+1][k] 
                                 + 4.0*f_gama[s][n+1][k+1]*D1_omega[n+1][k+1]
                                 + f_gama[s][n+1][k+2]*D1_omega[n+1][k+2]);
                  else
-                   sum_omega += ((SMAX/(SDIV-1.0))/3.0)*( f_rho[s][n+1][k]*D1_omega[n+1][k] 
+                   sum_omega += (DS/3.0)*( f_rho[s][n+1][k]*D1_omega[n+1][k] 
                                 + 4.0*f_rho[s][n+1][k+1]*D1_omega[n+1][k+1]
                                 + f_gama[s][n+1][k+2]*D1_omega[n+1][k+2]);
                }

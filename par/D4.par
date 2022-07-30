@@ -3,4 +3,6 @@
 rns_verbose=2
 rns_rhoc=3.116e-3
 rns_axes_ratio=0.65
+rns_save_2ddata=1
+outputdir=D4
 # be also sure not to leave blank lines after this.
