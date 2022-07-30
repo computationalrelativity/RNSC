@@ -438,7 +438,6 @@ void RNS_finalise(ini_data *data){
   /*
     Clean up all internally allocated objects.
   */
-  _dealloc_params_mem_if_req();
   int MDIV,SDIV;
   SDIV        = params_get_int("rns_SDIV");
   MDIV        = params_get_int("rns_MDIV");
@@ -470,6 +469,8 @@ void RNS_finalise(ini_data *data){
     
     free(data);
   }
+
+  _dealloc_params_mem_if_req();
 }
 
 
