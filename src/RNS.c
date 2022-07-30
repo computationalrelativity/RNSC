@@ -125,6 +125,10 @@ double axes_ratio_steps[ARSTEPS] = {.8, .6, .5, .4, .3, .2, .1, .05, .0025, .001
 ini_data* RNS_make_initial_data() {
   
   /* Set globals from parameters */
+  char rotation_type[1000];
+  double accuracy, A_diff,cf;
+  int RNS_lmax;
+  int MDIV,SDIV;
   strcpy(rotation_type,params_get_str("rns_rotation_type"));
   accuracy    = params_get_real("rns_accuracy");
   A_diff      = params_get_real("rns_A_diff");
@@ -132,7 +136,6 @@ ini_data* RNS_make_initial_data() {
   RNS_lmax    = params_get_int("rns_lmax");
   SDIV        = params_get_int("rns_SDIV"); 
   MDIV        = params_get_int("rns_MDIV");
-
   char eos_type[STRLEN];
   strcpy(eos_type,params_get_str("rns_eos_type"));  
   if( (strcmp(eos_type,"poly")!=0) && (strcmp(eos_type,"tab")!=0) ){
@@ -229,7 +232,6 @@ ini_data* RNS_make_initial_data() {
 
   params_set_real("atm_level_e",e_atm);
   params_set_real("atm_level_p", p_atm);
-  
   /* SET UP GRID */
   s_gp = malloc((SDIV+1)*sizeof(double));
   mu = malloc((MDIV+1)*sizeof(double));
@@ -267,12 +269,12 @@ ini_data* RNS_make_initial_data() {
   Omega_e=0.0; /* initialize ang. vel. at equator for diff. rot. */  
   
   if(strcmp(eos_type,"tab")==0) {
-    e_surface=7.8*C*C*KSCALE;
+    e_surface=7.8*C_SPEED*C_SPEED*KSCALE;
     p_surface=1.01e8*KSCALE;
-    enthalpy_min=1.0/(C*C);
+    enthalpy_min=1.0/(C_SPEED*C_SPEED);
     
     /* MAKE e_center DIMENSIONLESS FOR TAB. EOS */
-    e_center *= (C*C*KSCALE);
+    e_center *= (C_SPEED*C_SPEED*KSCALE);
 
   }
     
@@ -280,7 +282,6 @@ ini_data* RNS_make_initial_data() {
   make_center( e_center, log_e_tab, log_p_tab, log_h_tab, n_tab, 
 	       eos_type, eos_k,eos_ideal_fluid_gamma, &p_center, &h_center);   
   rho0_center = (e_center+p_center)*exp(-h_center);
-  
   /* COMPUTE THE MODEL */
   
   /* COMPUTE A SPHERICAL STAR AS A FIRST GUESS */
@@ -288,12 +289,10 @@ ini_data* RNS_make_initial_data() {
   guess( s_gp, eos_type, eos_k,e_center, p_center, p_surface, e_surface, 
 	 eos_ideal_fluid_gamma, log_e_tab, log_p_tab, log_h_tab, n_tab, rho_potential, gama, 
 	 alpha, omega, &r_e );     
-  
   /* ITERATE AND SPIN UP THE GUESS */
   for(int i=0;i<ARSTEPS;i++) {
     
     if (axes_ratio>axes_ratio_steps[i]) break; 
-    
     if(print_dif>print_globalprop1)
       printf("iter %d (%d) a=%g (%g)\n",i,ARSTEPS,axes_ratio_steps[i],axes_ratio);
     
@@ -440,6 +439,9 @@ void RNS_finalise(ini_data *data){
     Clean up all internally allocated objects.
   */
   _dealloc_params_mem_if_req();
+  int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
 
   if (data) {
 
@@ -720,6 +722,9 @@ void RNS_Cartesian_interpolation
 
 void RNS_data_print(ini_data *data)
 {
+  int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
   printf("# MDIV %d\n# SDIV %d\n", data->MDIV, data->SDIV);
   printf("# rho_center = %e\n# axes_ratio = %e\n",
 	  params_get_real("rns_rhoc"),
@@ -757,6 +762,9 @@ void RNS_data_print(ini_data *data)
 
 void RNS_data_tofile(ini_data *data)
 {
+  int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
   FILE *fp;
   char file[STRLEN*10];    
   sprintf(file,"%s/RNSdata_2d.dat",params_get_str("outputdir"));

@@ -17,8 +17,8 @@
 #ifndef _NR_UTILS_H_
 #define _NR_UTILS_H_
 
-static float sqrarg;
-#define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg)
+//static float sqrarg;
+//#define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg)
 
 static double dsqrarg;
 #define DSQR(a) ((dsqrarg=(a)) == 0.0 ? 0.0 : dsqrarg*dsqrarg)
@@ -56,7 +56,7 @@ static int iminarg1,iminarg2;
 #define IMIN(a,b) (iminarg1=(a),iminarg2=(b),(iminarg1) < (iminarg2) ?	\
 		   (iminarg1) : (iminarg2))
 
-#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
+//#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 
 #if defined(__STDC__) || defined(ANSI) || defined(NRANSI)
 /* ANSI */
@@ -123,12 +123,12 @@ void free_f3tensor();
 #define DM (1.0/(MDIV-1.0))          /* spacing in mu direction */ 
 #define RDIV (900)                   /* grid point in RK integration */ 
 #define SMAX (0.9999)                /* maximum value of s-coordinate */  
-#define DS (SMAX/(SDIV-1.0))         /* spacing in s-direction */
+//#define DS (SMAX/(SDIV-1.0))         /* spacing in s-direction */
 
-#define C (2.9979e10)                /* speed of light in vacuum */
+#define C_SPEED (2.9979e10)                /* speed of light in vacuum */
 #define G (6.6732e-8)                /* gravitational constant */ 
-#define KAPPA (1.0e-15*C*C/G)        /* scaling factor */
-#define KSCALE (KAPPA*G/(C*C*C*C))   /* another scaling factor */
+#define KAPPA (1.0e-15*C_SPEED*C_SPEED/G)        /* scaling factor */
+#define KSCALE (KAPPA*G/(C_SPEED*C_SPEED*C_SPEED*C_SPEED))   /* another scaling factor */
 #define MSUN (1.987e33)              /* Mass of Sun */
 #define SQ(x) ((x)*(x))              /* square macro */
 #define MB (1.66e-24)                /* baryon mass */
@@ -165,10 +165,10 @@ enum{
 
 /** Globals */
 
-char rotation_type[1000];
-double accuracy, A_diff,cf;
-int RNS_lmax;
-int MDIV,SDIV;
+//char rotation_type[1000];
+//double accuracy, A_diff,cf;
+//int RNS_lmax;
+//int MDIV,SDIV;
 
 /** RNS_equil.c */
 
@@ -371,7 +371,7 @@ void grid_interp(double **old,
                  int i,
                  int j,
                  int k, 
-                 double *new,
+                 double *new_,
                  int sign);
 void grid_interp_all( double *s_gp, 
                        double *mu, 
@@ -427,7 +427,7 @@ void grid_interp_new( int k_s,
 		      double *s_4, 
 		      double *mu_4, 
 		      double **old, 
-		      double *new );
+		      double *new_ );
 void grid_interp_all_new (double *s_gp, 
 			  double *mu, 
 			  double r_e, 
@@ -560,7 +560,7 @@ void grid_interp(double **old,
                  int i,
                  int j,
                  int k, 
-                 double *new,
+                 double *new_,
                  int sign);
 void grid_interp_all(double *s_gp, 
 		     double *mu, 

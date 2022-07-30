@@ -116,6 +116,10 @@ void grid_interp(double **old,
                  double *new,
                  int sign) {
 
+  int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
+
 int s,
     m,
     s_nearest,
@@ -321,7 +325,13 @@ void grid_interp_all_new ( double *s_gp,
 			   double *rho_0_c, double *energy_c, double *pressure_c,
 			   double *Omega_diff_c)
 {  
-  
+ 
+
+  int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
+
+ 
   int s,
     m,
     s_nearest,            /* nearest points in interpolation */
@@ -475,6 +485,10 @@ void transform_units(
 int i,                                       /* counter */
       j;                                      /* counter */
  
+
+  int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
 
    for(i=1;i<=SDIV;i++)
         for(j=1;j<=MDIV;j++) {

@@ -235,7 +235,7 @@ void print_global_quantities(char * eos_type,
 {
   const double I = (Omega != 0.0)? J/Omega : 0.0 ;
   const double I_45 = I/(1.0e45);
-  const double J_units = C/(G*Mass*Mass);
+  const double J_units = C_SPEED/(G*Mass*Mass);
   const double mass_units = MSUN;
   
   printf("# 1:rho_center");

@@ -7,7 +7,7 @@ equil_util.c	UTILITY PROGRAMS USED TO COMPUTE THE EQUILIBRIUM
 
 
 #include "RNS.h"
-
+#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 
 /***************************************************************************/
 /* Routine that locates nearest grid point for a given value.              */
@@ -108,12 +108,17 @@ double deriv_s(double **f,int s, int m)
 { 
  double d_temp;
 
+  int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
+
+
  if (s==1) {
-   d_temp=(f[s+1][m]-f[s][m])/DS;
+   d_temp=(f[s+1][m]-f[s][m])/(SMAX/(SDIV-1.0));
  } else if (s==SDIV) {
-   d_temp=(f[s][m]-f[s-1][m])/DS;
+   d_temp=(f[s][m]-f[s-1][m])/(SMAX/(SDIV-1.0));
  } else {
-   d_temp=(f[s+1][m]-f[s-1][m])/(2.0*DS);
+   d_temp=(f[s+1][m]-f[s-1][m])/(2.0*(SMAX/(SDIV-1.0)));
  } 
  
  return d_temp;
@@ -125,36 +130,40 @@ double deriv_s(double **f,int s, int m)
 double deriv_ss(double **f,int s, int m)
 { 
  double d_temp;
+int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
+
 
 
  if (s==1)
    {
      s=4;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
    }
  else if (s==2)
    {
      s=4;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
    }
  else if (s==3)
    {
      s=4;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
    }
  else if (s==SDIV-1)
    {
      s=SDIV-2;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
    }
  else if (s==SDIV)
    {
      s=SDIV-2;
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
    }
  else
    {
-     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ(DS));
+     d_temp=(f[s+2][m]-2.0*f[s][m]+f[s-2][m])/(4.0*SQ((SMAX/(SDIV-1.0))));
    }
 
  return d_temp;
@@ -166,6 +175,10 @@ double deriv_ss(double **f,int s, int m)
 double deriv_m(double **f,int s, int m)
 {
  double d_temp;
+int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
+
 
  if (m==1)
    {
@@ -189,6 +202,10 @@ double deriv_m(double **f,int s, int m)
 double deriv_mm(double **f,int s, int m)
 { 
  double d_temp;
+int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
+
 
  if (m==1)
    {
@@ -214,44 +231,48 @@ double deriv_mm(double **f,int s, int m)
 double deriv_sm(double **f,int s, int m)
 {
  double d_temp;
+int MDIV,SDIV;
+  SDIV        = params_get_int("rns_SDIV");
+  MDIV        = params_get_int("rns_MDIV");
+
 
  if (s==1)
    {
      if(m==1) {
-       d_temp=(f[s+1][m+1]-f[s][m+1]-f[s+1][m]+f[s][m])/(DM*DS);
+       d_temp=(f[s+1][m+1]-f[s][m+1]-f[s+1][m]+f[s][m])/(DM*(SMAX/(SDIV-1.0)));
      }else{
        if(m==MDIV) {
-         d_temp=(f[s+1][m]-f[s][m]-f[s+1][m-1]+f[s][m-1])/(DM*DS);
+         d_temp=(f[s+1][m]-f[s][m]-f[s+1][m-1]+f[s][m-1])/(DM*(SMAX/(SDIV-1.0)));
        }else{
          d_temp=(f[s+1][m+1]-f[s+1][m-1]-f[s][m+1]+f[s][m-1])/
-           (2.0*DM*DS);
+           (2.0*DM*(SMAX/(SDIV-1.0)));
        }
      }
    }
  else if (s==SDIV)
    {
      if(m==1) {
-       d_temp=(f[s][m+1]-f[s][m]-f[s-1][m+1]+f[s-1][m])/(DM*DS);
+       d_temp=(f[s][m+1]-f[s][m]-f[s-1][m+1]+f[s-1][m])/(DM*(SMAX/(SDIV-1.0)));
      }else{
        if(m==MDIV) {
-         d_temp=(f[s][m]-f[s-1][m]-f[s][m-1]+f[s-1][m-1])/(DM*DS);
+         d_temp=(f[s][m]-f[s-1][m]-f[s][m-1]+f[s-1][m-1])/(DM*(SMAX/(SDIV-1.0)));
        }else{
          d_temp=(f[s][m+1]-f[s][m-1]-f[s-1][m+1]+f[s-1][m-1])/
-           (2.0*DM*DS);
+           (2.0*DM*(SMAX/(SDIV-1.0)));
        }
      }
    }
  else
    {
      if(m==1) {
-       d_temp=(f[s+1][m+1]-f[s-1][m+1]-f[s+1][m]+f[s-1][m])/(2.0*DM*DS);
+       d_temp=(f[s+1][m+1]-f[s-1][m+1]-f[s+1][m]+f[s-1][m])/(2.0*DM*(SMAX/(SDIV-1.0)));
      }else{
        if(m==MDIV) {
          d_temp=(f[s+1][m]-f[s-1][m]-f[s+1][m-1]+f[s-1][m-1])/
-           (2.0*DM*DS);
+           (2.0*DM*(SMAX/(SDIV-1.0)));
        }else{
          d_temp=(f[s+1][m+1]-f[s-1][m+1]-f[s+1][m-1]+f[s-1][m-1])/
-           (4.0*DM*DS);
+           (4.0*DM*(SMAX/(SDIV-1.0)));
        }
      }
    }
