@@ -7,7 +7,19 @@ equil_util.c	UTILITY PROGRAMS USED TO COMPUTE THE EQUILIBRIUM
 
 
 #include "RNS.h"
+
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
+
+static int imaxarg1,imaxarg2;
+#define IMAX(a,b) (imaxarg1=(a),imaxarg2=(b),(imaxarg1) > (imaxarg2) ?	\
+		   (imaxarg1) : (imaxarg2))
+
+static int iminarg1,iminarg2;
+#define IMIN(a,b) (iminarg1=(a),iminarg2=(b),(iminarg1) < (iminarg2) ?	\
+		   (iminarg1) : (iminarg2))
+
+#define MAXIT (1000) /* max iterations for secant */
+#define ITMAX (100) /* max iterations for zbrent */
 
 /***************************************************************************/
 /* Routine that locates nearest grid point for a given value.              */
@@ -110,6 +122,7 @@ double deriv_s(double **f,int s, int m)
 
  const int SDIV  = params_get_int("rns_SDIV"); 
  const int MDIV  = params_get_int("rns_MDIV");
+ const double SMAX = params_get_real("rns_SMAX");
  const double DS = (SMAX/(SDIV-1.0));
  
  if (s==1) {
@@ -132,6 +145,7 @@ double deriv_ss(double **f,int s, int m)
 
  const int SDIV  = params_get_int("rns_SDIV"); 
  const int MDIV  = params_get_int("rns_MDIV");
+ const double SMAX = params_get_real("rns_SMAX");
  const double DS = (SMAX/(SDIV-1.0));
 
  if (s==1)
@@ -231,6 +245,7 @@ double deriv_sm(double **f,int s, int m)
 
  const int SDIV  = params_get_int("rns_SDIV");
  const int MDIV  = params_get_int("rns_MDIV");
+ const double SMAX = params_get_real("rns_SMAX");
  const double DM = (1.0/(MDIV-1.0));
  const double DS = (SMAX/(SDIV-1.0));
 
@@ -372,7 +387,6 @@ double rtsec_G(double (*func)(double, double, double),
          rts=x2;
         }
 
- 
  for(j=1;j<=MAXIT;j++) {
     dx=(xl-rts)*f/(f-fl);
     xl=rts;

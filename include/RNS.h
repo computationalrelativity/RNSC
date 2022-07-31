@@ -17,47 +17,31 @@
 #ifndef _NR_UTILS_H_
 #define _NR_UTILS_H_
 
-/* unused */
+/* Moved NR macros IMIN, IMAX, SIGN where needed.
+ * Commented out unused macros:
+ */
 /* static float sqrarg; */
 /* #define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg) */
-
-static double dsqrarg;
-#define DSQR(a) ((dsqrarg=(a)) == 0.0 ? 0.0 : dsqrarg*dsqrarg)
-
-static double dmaxarg1,dmaxarg2;
-#define DMAX(a,b) (dmaxarg1=(a),dmaxarg2=(b),(dmaxarg1) > (dmaxarg2) ?\
-		   (dmaxarg1) : (dmaxarg2))
-
-static double dminarg1,dminarg2;
-#define DMIN(a,b) (dminarg1=(a),dminarg2=(b),(dminarg1) < (dminarg2) ?	\
-		   (dminarg1) : (dminarg2))
-
-static float maxarg1,maxarg2;
-#define FMAX(a,b) (maxarg1=(a),maxarg2=(b),(maxarg1) > (maxarg2) ?	\
-		   (maxarg1) : (maxarg2))
-
-static float minarg1,minarg2;
-#define FMIN(a,b) (minarg1=(a),minarg2=(b),(minarg1) < (minarg2) ?	\
-		   (minarg1) : (minarg2))
-/* EXCLUDE: LMAX is something else in RNS */
-/*
-  static long lmaxarg1,lmaxarg2;
-  #define LMAX(a,b) (lmaxarg1=(a),lmaxarg2=(b),(lmaxarg1) > (lmaxarg2) ? \
-  (lmaxarg1) : (lmaxarg2))
-*/
-static long lminarg1,lminarg2;
-#define LMIN(a,b) (lminarg1=(a),lminarg2=(b),(lminarg1) < (lminarg2) ?	\
-		   (lminarg1) : (lminarg2))
-
-static int imaxarg1,imaxarg2;
-#define IMAX(a,b) (imaxarg1=(a),imaxarg2=(b),(imaxarg1) > (imaxarg2) ?	\
-		   (imaxarg1) : (imaxarg2))
-
-static int iminarg1,iminarg2;
-#define IMIN(a,b) (iminarg1=(a),iminarg2=(b),(iminarg1) < (iminarg2) ?	\
-		   (iminarg1) : (iminarg2))
-
-//#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
+/* static float maxarg1,maxarg2; */
+/* #define FMAX(a,b) (maxarg1=(a),maxarg2=(b),(maxarg1) > (maxarg2) ?	\ */
+/* 		   (maxarg1) : (maxarg2)) */
+/* static float minarg1,minarg2; */
+/* #define FMIN(a,b) (minarg1=(a),minarg2=(b),(minarg1) < (minarg2) ?	\ */
+/* 		   (minarg1) : (minarg2)) */
+/* static long lmaxarg1,lmaxarg2; */
+/* #define LMAX(a,b) (lmaxarg1=(a),lmaxarg2=(b),(lmaxarg1) > (lmaxarg2) ? \ */
+/* (lmaxarg1) : (lmaxarg2)) */
+/* static long lminarg1,lminarg2; */
+/* #define LMIN(a,b) (lminarg1=(a),lminarg2=(b),(lminarg1) < (lminarg2) ?	\ */
+/* 		   (lminarg1) : (lminarg2)) */
+/* static double dmaxarg1,dmaxarg2; */
+/* #define DMAX(a,b) (dmaxarg1=(a),dmaxarg2=(b),(dmaxarg1) > (dmaxarg2) ?\ */
+/* 		   (dmaxarg1) : (dmaxarg2)) */
+/* static double dminarg1,dminarg2; */
+/* #define DMIN(a,b) (dminarg1=(a),dminarg2=(b),(dminarg1) < (dminarg2) ?	\ */
+/* 		   (dminarg1) : (dminarg2)) */
+/* static double dsqrarg; */
+/* #define DSQR(a) ((dsqrarg=(a)) == 0.0 ? 0.0 : dsqrarg*dsqrarg) */
 
 #if defined(__STDC__) || defined(ANSI) || defined(NRANSI)
 /* ANSI */
@@ -117,24 +101,25 @@ void free_f3tensor();
 
 /** Constants & parameters */
 
-/* Following grid sizes are now parameters */
-/*   #define MDIV 301 */
-/*   #define SDIV 601 */
+/* Following grid parameters are now parameters/local variables */
+/* #define MDIV 301 */
+/* #define SDIV 601 */
+/* #define DM (1.0/(MDIV-1.0)) */    /* spacing in mu direction */ 
+/* #define DS (SMAX/(SDIV-1.0)) */   /* spacing in s-direction */
+/* #define SMAX (0.9999) */          /* maximum value of s-coordinate */  
 
-/* #define DM (1.0/(MDIV-1.0)) */          /* spacing in mu direction */ 
-#define RDIV (900)                   /* grid point in RK integration */ 
-#define SMAX (0.9999)                /* maximum value of s-coordinate */  
-/* #define DS (SMAX/(SDIV-1.0)) */         /* spacing in s-direction */
+/* moved where needed (src/RNS_equil.c) */
+/* #define RDIV (900) */             /* grid point in RK integration */ 
+/* #define RMIN (1.0e-15) */         /* use approximate TOV equations when
+                                        computing spherical star and r<RMIN */
 
-#define C_SPEED (2.9979e10)                /* speed of light in vacuum */
+#define C_SPEED (2.9979e10)          /* speed of light in vacuum */
 #define G (6.6732e-8)                /* gravitational constant */ 
 #define KAPPA (1.0e-15*C_SPEED*C_SPEED/G)        /* scaling factor */
 #define KSCALE (KAPPA*G/(C_SPEED*C_SPEED*C_SPEED*C_SPEED))   /* another scaling factor */
 #define MSUN (1.987e33)              /* Mass of Sun */
 #define SQ(x) ((x)*(x))              /* square macro */
 #define MB (1.66e-24)                /* baryon mass */
-#define RMIN (1.0e-15)               /* use approximate TOV equations when
-					computing spherical star and r<RMIN */
 
 /* constants to convert from cgs to cactus units*/
 #define cactusM (0.5027e-33)
@@ -142,7 +127,12 @@ void free_f3tensor();
 #define cactusT (2.0295e5)
 #define cactusV (1.0/(cactusL*cactusL*cactusL))
 
-#define MAXIT (1000)
+#define TABPTS (2001) /* Warning: fixed max size of EOS tables */
+
+/* moved where needed (src/RNS_equil_util.c) */
+/* #define MAXIT (1000) */ /* max iterations for secant */
+/* #define ITMAX (100) */ /* max iterations for zbrent */
+
 #ifndef PI
 #define PI (3.1415926535)              /* what else */
 #endif
@@ -150,11 +140,8 @@ void free_f3tensor();
 #ifndef DBL_EPSILON
 #define DBL_EPSILON 1e-15
 #endif
-
-#define ITMAX 100
 #define EPS DBL_EPSILON
 
-#define TABPTS (2001) /* Warning: fixed max size of EOS tables */
 
 /* verbose levels */
 enum{
@@ -280,9 +267,9 @@ void integrate(int    i_check,
                double log_p_tab[TABPTS],
                double log_h_tab[TABPTS],
                int    n_tab,
-               double r_is_gp[RDIV+1], 
-               double lambda_gp[RDIV+1], 
-               double nu_gp[RDIV+1], 
+               double r_is_gp[], //[RDIV+1], 
+               double lambda_gp[], //[RDIV+1], 
+               double nu_gp[], //[RDIV+1], 
                double *r_is_final, 
                double *r_final, 
                double *m_final);

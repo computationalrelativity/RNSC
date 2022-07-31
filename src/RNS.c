@@ -92,7 +92,8 @@ void RNS_params_set_default(){
   params_add_int("rns_MDIV",301);  // number of points in angular dir
   params_add_int("rns_lmax",10);
   params_add_int("rns_save_2ddata",0);
-  
+
+  params_add_real("rns_SMAX",0.9999);
   params_add_real("rns_accuracy",1e-10);
   params_add_real("rns_conv_factor",1.);
   params_add_real("rns_axes_ratio",1.0); 

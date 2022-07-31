@@ -20,6 +20,10 @@ equil.c		PROCEDURES USED TO COMPUTE THE EQUILIBRIUM STAR
 
 #include "RNS.h"
 
+#define RDIV (900) /* grid point in RK integration */
+#define RMIN (1.0e-15) /* use approximate TOV equations when
+			  computing spherical star and r<RMIN */
+
 /*******************************************************************/
 /* Create computational grid.                                      */
 /* Points in the mu-direction are stored in the array mu[i].       */
@@ -27,9 +31,10 @@ equil.c		PROCEDURES USED TO COMPUTE THE EQUILIBRIUM STAR
 /*******************************************************************/
 void rns_make_grid(double *s_gp,double *mu)
 {
-  const int SDIV        = params_get_int("rns_SDIV"); 
-  const int MDIV        = params_get_int("rns_MDIV");
- 
+  const int SDIV = params_get_int("rns_SDIV"); 
+  const int MDIV = params_get_int("rns_MDIV");
+  const double SMAX = params_get_real("rns_SMAX");
+  
   for(int s=1;s<=SDIV;s++) 
     s_gp[s] = SMAX*(s-1.0)/(SDIV-1.0);
   
@@ -221,8 +226,9 @@ void comp_values(double *s_gp,
      n_nearest;
 
 
- const int SDIV        = params_get_int("rns_SDIV"); 
- const int MDIV        = params_get_int("rns_MDIV");
+ const int SDIV = params_get_int("rns_SDIV"); 
+ const int MDIV = params_get_int("rns_MDIV");
+ const double SMAX = params_get_real("rns_SMAX");
  
  double **velocity,                /* velocity */
         **rho_0,                   /* rest mass density */
@@ -938,6 +944,7 @@ void iterate(double *s_gp,
 
   const int SDIV = params_get_int("rns_SDIV");
   const int MDIV = params_get_int("rns_MDIV");
+  const double SMAX = params_get_real("rns_SMAX");
   const double DM = (1.0/(MDIV-1.0));
   const double DS = (SMAX/(SDIV-1.0));
   
