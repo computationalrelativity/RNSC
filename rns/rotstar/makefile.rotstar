@@ -1,0 +1,92 @@
+#/*************************************************************************
+#*
+#*                     MAKEFILE FOR ROTSTAR.C
+#*                                                                         
+#*************************************************************************/
+
+
+#######################################################################
+#                                                                     #
+# 1. Specify C compiler and ANSI option:                              #
+#                                                                     #      
+####################################################################### 
+
+#DEC ALPHA
+#CC=cc -std1
+
+#Linux
+CC=gcc
+
+#/*************************************************************************
+#*                     SPECIFY GRID SIZE
+#*************************************************************************/
+
+#STANDARD
+#SIZE=-DMDIV=65 -DSDIV=129
+
+#HIGH
+#SIZE=-DMDIV=101 -DSDIV=201
+
+#VERY HIGH
+#SIZE=-DMDIV=151 -DSDIV=301
+
+#VERY VERY HIGH
+#SIZE=-DMDIV=201 -DSDIV=401
+
+#LOW
+#SIZE=-DMDIV=51 -DSDIV=101
+
+#VERY LOW
+#SIZE=-DMDIV=41 -DSDIV=71
+
+# USED IN WHISKY:
+#
+SIZE=-DMDIV=301 -DSDIV=601
+
+#/*************************************************************************
+#*                     COMPILING FLAGS
+#*************************************************************************/
+
+# DEBUGGING OPTION
+#MY_OWN =-g3 -Wall
+
+# OPTIMIZATION
+#MY_OWN =-O1 
+#MY_OWN =-O2 
+#MY_OWN =-O3 
+
+#/*************************************************************************
+#*                    SOURCE AND OBJECT MACROS
+#*************************************************************************/
+
+OBJ=rotstar.o equil.o equil_util.o nrutil.o 
+#OBJ=kepler.o equil.o equil_util.o nrutil.o 
+EXE=rotstar.x
+#EXE=kepler.x
+
+#/*************************************************************************
+#*                    MAIN COMPILING INSTRUCTIONS
+#*************************************************************************/
+
+rotstar: $(OBJ)	
+	$(CC) $(MY_OWN) -lm  $(SIZE)  -o $(EXE) $(OBJ) 
+
+#kepler: $(OBJ)
+#	$(CC) $(MY_OWN) -lm  $(SIZE)  -o $(EXE) $(OBJ) 
+
+rotstar.o: equil.h  nrutil.h consts.h rotstar.c
+	$(CC) -c $(MY_OWN) $(CFLAGS) $(COPTFLAGS) $(SIZE) rotstar.c 
+
+equil.o:equil.h equil_util.h nrutil.h consts.h equil.c
+	$(CC) -c $(MY_OWN) $(COPTFLAGS) $(SIZE) equil.c
+
+equil_util.o:equil_util.h nrutil.h consts.h equil_util.c
+	$(CC) -c $(MY_OWN) $(COPTFLAGS) $(SIZE) equil_util.c
+
+nrutil.o:nrutil.h nrutil.c
+	$(CC) -c $(MY_OWN) $(COPTFLAGS) $(SIZE) nrutil.c
+
+clean:
+	rm -rf $(EXE) $(OBJ) *~
+
+# EOF

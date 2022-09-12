@@ -1,0 +1,102 @@
+# =======================================================================
+# Equilibrium models of Uniformly Rotating polytropic Neutron Stars 
+# Ref: TAB.1. of http://arxiv.org/abs/astro-ph/0511394
+# =======================================================================
+#
+# UNITS 
+# ----------------------------------------------
+# Two different system are tabulated here
+#
+#	[S] "standard dimensionless" G=c=Msun=1 
+#	[P] "polytropic dimensionless" G=c=1 , K(polytropic constant)=1 
+#
+# In the reference [S] are used. 
+# The RNS code use [P] both in the computation and in I/0 for polytropic EOS,
+# but it uses a mixture of CGS and [S] for tabulated EOS, look at the manual and be aware !
+# Here we deal with polytropic models only.
+#
+# [P] are defined in: Cook, Shapiro & Teukolsky ApJ 398:203-223 (1992) Eqs: (15)-(23)
+#
+# MODELS
+# ----------------------------------------------
+# All the models are described by a polytropic EOS:
+#
+#       eps = K rho^(G-1) /( G-1) 
+#	p   = K rho^G
+#  	
+# with parameters:
+#
+#	N =1 		"polytropic index"      [S]
+#	G := 1 + 1/N	"adiabatic index"
+#	K = 100	 	"polytropic constant" [S]
+#
+# Notice that the models can be evolved either with polytropic or ideal EOS 
+#
+#	p = (G-1) rho eps
+#
+# because they are compatible for the equilibrium configuration. 
+# The difference in the evolution is to allow shock-heating (ideal) and 
+# the possibility to use 4 instead of 5 of GRHD equations (polytropic, 
+# equation for D is equivalent to Tau equation).
+#
+# Two sequences of stars are considered:
+#
+#	Sequence AU : fixed rest-mass M0=1.506 [S]
+# 	Sequence BU : fixed central rest-mass density rho_c=1.23e-3 [S]
+#
+# they are formed by uniform rotating stars with increasing angular velocity,
+# from 0 to the Keplerian limit.
+#
+# EQUILIBRIUM PARAMETERS
+# ----------------------------------------------
+#
+# Definitions
+#
+#	e_c		central total energy density, e := rho(1+eps)
+#	M		gravitational mass
+#	R		circumferential radius
+#	r_e		equatorial radius	
+#	r_p/r_e	polar and equatorial radii ratio
+#	Omega 	angular velocity
+#	T/|W|	Kinetic/Gravitational binding energy ratio
+#
+# ----------------------------------------------------------------------------------------
+#	Name	e_c		M			R			r_e		r_p/r_e		Omega		T/|W|
+# ----------------------------------------------------------------------------------------
+S: AU0 1.4440e-03   1.4000e+00   9.5900e+00   8.1300e+00   1.0000e+00            0            0
+S: AU1 1.3000e-03   1.4040e+00   1.0190e+01   8.7100e+00   9.1900e-01   1.2930e+00   2.0000e-02
+S: AU2 1.1870e-03   1.4070e+00   1.0790e+01   9.3000e+00   8.5200e-01   1.6560e+00   3.7000e-02
+S: AU3 1.0740e-03   1.4110e+00   1.1560e+01   1.0060e+01   7.8000e-01   1.8880e+00   5.5000e-02
+S: AU4 9.6100e-04   1.4150e+00   1.2650e+01   1.1140e+01   6.9800e-01   2.0290e+00   7.6000e-02
+S: AU5 8.6300e-04   1.4200e+00   1.4940e+01   1.3430e+01   5.7500e-01   2.0840e+00   9.5000e-02
+# ----------------------------------------------------------------------------------------
+P: AU0 1.4440e-01   1.4000e-01   9.5900e-01   8.1300e-01   1.0000e+00            0            0
+P: AU1 1.3000e-01   1.4040e-01   1.0190e+00   8.7100e-01   9.1900e-01   1.2930e+01   2.0000e-02
+P: AU2 1.1870e-01   1.4070e-01   1.0790e+00   9.3000e-01   8.5200e-01   1.6560e+01   3.7000e-02
+P: AU3 1.0740e-01   1.4110e-01   1.1560e+00   1.0060e+00   7.8000e-01   1.8880e+01   5.5000e-02
+P: AU4 9.6100e-02   1.4150e-01   1.2650e+00   1.1140e+00   6.9800e-01   2.0290e+01   7.6000e-02
+P: AU5 8.6300e-02   1.4200e-01   1.4940e+00   1.3430e+00   5.7500e-01   2.0840e+01   9.5000e-02
+# ----------------------------------------------------------------------------------------
+S: BU0 1.4440e-03   1.4000e+00   9.5900e+00   8.1300e+00   1.0000e+00            0            0
+S: BU0 1.4440e-03   1.4320e+00   9.8300e+00   8.3300e+00   9.5000e-01   1.0750e-02   1.2000e-02
+S: BU0 1.4440e-03   1.4660e+00   1.0110e+01   8.5800e+00   9.0000e-01   1.5090e-02   2.4000e-02
+S: BU0 1.4440e-03   1.5030e+00   1.0420e+01   8.8200e+00   8.5000e-01   1.8290e-02   3.7000e-02
+S: BU0 1.4440e-03   1.5430e+00   1.0780e+01   9.1300e+00   8.0000e-01   2.0840e-02   5.0000e-02
+S: BU0 1.4440e-03   1.5850e+00   1.1200e+01   9.5000e+00   7.5000e-01   2.2900e-02   6.2000e-02
+S: BU0 1.4440e-03   1.6270e+00   1.1690e+01   9.9500e+00   7.0000e-01   2.4520e-02   7.4000e-02
+S: BU0 1.4440e-03   1.6660e+00   1.2300e+01   1.0510e+01   6.5000e-01   2.5690e-02   8.4000e-02
+S: BU0 1.4440e-03   1.6920e+00   1.3070e+01   1.1260e+01   6.0000e-01   2.6330e-02   9.1000e-02
+S: BU0 1.4440e-03   1.6950e+00   1.3440e+01   1.1630e+01   5.8000e-01   2.6420e-02   9.2000e-02
+# ----------------------------------------------------------------------------------------
+P: BU0 1.4440e-01   1.4000e-01   9.5900e-01   8.1300e-01   1.0000e+00            0            0
+P: BU0 1.4440e-01   1.4320e-01   9.8300e-01   8.3300e-01   9.5000e-01   1.0750e-01   1.2000e-02
+P: BU0 1.4440e-01   1.4660e-01   1.0110e+00   8.5800e-01   9.0000e-01   1.5090e-01   2.4000e-02
+P: BU0 1.4440e-01   1.5030e-01   1.0420e+00   8.8200e-01   8.5000e-01   1.8290e-01   3.7000e-02
+P: BU0 1.4440e-01   1.5430e-01   1.0780e+00   9.1300e-01   8.0000e-01   2.0840e-01   5.0000e-02
+P: BU0 1.4440e-01   1.5850e-01   1.1200e+00   9.5000e-01   7.5000e-01   2.2900e-01   6.2000e-02
+P: BU0 1.4440e-01   1.6270e-01   1.1690e+00   9.9500e-01   7.0000e-01   2.4520e-01   7.4000e-02
+P: BU0 1.4440e-01   1.6660e-01   1.2300e+00   1.0510e+00   6.5000e-01   2.5690e-01   8.4000e-02
+P: BU0 1.4440e-01   1.6920e-01   1.3070e+00   1.1260e+00   6.0000e-01   2.6330e-01   9.1000e-02
+P: BU0 1.4440e-01   1.6950e-01   1.3440e+00   1.1630e+00   5.8000e-01   2.6420e-01   9.2000e-02
+# =======================================================================
+#EOF
