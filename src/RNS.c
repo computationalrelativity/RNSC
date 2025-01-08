@@ -265,15 +265,15 @@ ini_data* RNS_make_initial_data() {
   enthalpy_min=0.0;
   Omega_e=0.0; /* initialize ang. vel. at equator for diff. rot. */  
   
-  if(strcmp(eos_type,"tab")==0) {
-    e_surface=7.8*C_SPEED*C_SPEED*KSCALE;
-    p_surface=1.01e8*KSCALE;
-    enthalpy_min=1.0/(C_SPEED*C_SPEED);
-    
-    /* MAKE e_center DIMENSIONLESS FOR TAB. EOS */
-    e_center *= (C_SPEED*C_SPEED*KSCALE);
-
-  }
+  // if(strcmp(eos_type,"tab")==0) {
+  //   e_surface=7.8*C_SPEED*C_SPEED*KSCALE;
+  //   p_surface=1.01e8*KSCALE;
+  //   enthalpy_min=1.0/(C_SPEED*C_SPEED);
+  //   
+  //   /* MAKE e_center DIMENSIONLESS FOR TAB. EOS */
+  //   e_center *= (C_SPEED*C_SPEED*KSCALE);
+  //
+  // }
     
   /* COMPUTE DIMENSIONLESS CENTRAL PRESSURE AND ENTHALPY */
   make_center( e_center, log_e_tab, log_p_tab, log_h_tab, n_tab, 
