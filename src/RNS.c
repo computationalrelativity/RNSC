@@ -349,6 +349,8 @@ ini_data* RNS_make_initial_data() {
   data->MDIV = MDIV;
   data->SDIV = SDIV;
   data->r_e = r_e;
+  data->mass = Mass;
+  data->mass_0 = Mass_0;
 
   data->s_gp = malloc((SDIV+1)*sizeof(double));
   data->mu = malloc((MDIV+1)*sizeof(double));
@@ -781,14 +783,17 @@ void RNS_data_tofile(ini_data *data)
   } else {
     fprintf(fp,"# EOS_file = %s\n",params_get_str("rns_eos_tab"));
   }
+  fprintf(fp,"# r_e = %e\n",data->r_e);
+  fprintf(fp,"# mass = %e\n",data->mass);
+  fprintf(fp,"# mass_0 = %e\n",data->mass_0);
   fprintf(fp,"# \n");
   fprintf(fp,"#data: s_gp:1 mu:2 nu:3 nu_dr:4 nu_dth:5 B:6 B_dr:7 B_dth:8 omega:9 omega_dr:10 omega_dth:11 alpha:12 alpha_dr:13 alpha_dth:14 rho0:15 energy:16 pressure:17 Omega_diff:18\n");
   for(int m=1;m<=MDIV;m++) {
-    for(int s=1;s<=SDIV;s++) {  
-      fprintf(fp,"%le %le"
-	     "%le %le %le %le %le %le "
-	     "%le %le %le %le %le %le "
-	     "%le %le %le %le \n",
+    for(int s=1;s<=SDIV;s++) {
+      fprintf(fp,"%le %le "
+	     "%le  %le  %le %le %le %le "
+	     "%le  %le  %le %le %le %le "
+	     "%le  %le  %le %le \n",
 	      data->s_gp[s], data->mu[m],
 	     data->nu[s][m], data->nu_dr[s][m], data->nu_dth[s][m],
 	     data->B[s][m], data->B_dr[s][m],data->B_dth[s][m],

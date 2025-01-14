@@ -732,6 +732,8 @@ extern "C" {
     double *s_gp;
     double *mu;
     double r_e;
+    double mass;
+    double mass_0;
 
     double **rho_0;    /* rest mass density */
     double **energy;
