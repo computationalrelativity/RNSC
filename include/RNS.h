@@ -122,9 +122,14 @@ void free_f3tensor();
 #define MB (1.66e-24)                /* baryon mass */
 
 /* constants to convert from cgs to cactus units*/
-#define cactusM (0.5027e-33)
-#define cactusL (0.6770e-5)
-#define cactusT (2.0295e5)
+/* primitive solver units */
+#define cactusM (5.028966849050531e-34)
+#define cactusL (6.772184329945012e-6)
+#define cactusT (2.030249786303298e5)
+/* old units */
+/* #define cactusM (0.5027e-33) */
+/* #define cactusL (0.6770e-5) */
+/* #define cactusT (2.0295e5) */
 #define cactusV (1.0/(cactusL*cactusL*cactusL))
 
 #define TABPTS (2001) /* Warning: fixed max size of EOS tables */
